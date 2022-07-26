@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:timer/layouts/narrow.dart';
+import 'package:timer/layouts/wide.dart';
 
 void main() {
   runApp(const MyApp());
@@ -39,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Timer? timer;
   Duration secondsElapsed = const Duration(seconds: 0);
 
-  void _startCounter() {
+  void _start() {
     timer = Timer.periodic(const Duration(seconds: 1), (_) {
       final seconds = secondsElapsed.inSeconds + 1;
       setState(() {
@@ -63,48 +65,26 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final TextStyle? style = Theme.of(context).textTheme.displayMedium;
-    String timeDigits(int n) => n.toString().padLeft(2, '0');
-
-    final hours = timeDigits(secondsElapsed.inHours.remainder(24));
-    final minutes = timeDigits(secondsElapsed.inMinutes.remainder(60));
-    final seconds = timeDigits(secondsElapsed.inSeconds.remainder(60));
-
     final bool isTimerRunning = timer?.isActive ?? false;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Center(
-              child: Text(
-                '$hours:$minutes:$seconds',
-                style: style,
-              ),
-            ),
-          ),
-          if (secondsElapsed.inMilliseconds > 0)
-            IconButton(
-              onPressed: _reset,
-              icon: const Icon(Icons.stop),
-            ),
-        ],
-      ),
-      floatingActionButton: !isTimerRunning
-          ? FloatingActionButton(
-              onPressed: _startCounter,
-              child: const Icon(Icons.play_arrow),
-            )
-          : FloatingActionButton(
-              onPressed: _pause,
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              child: const Icon(Icons.pause),
-            ),
-    );
+    return LayoutBuilder(builder: ((context, constraints) {
+      if (constraints.maxWidth > 500) {
+        return WideLayout(
+            title: widget.title,
+            duration: secondsElapsed,
+            pause: _pause,
+            start: _start,
+            reset: _reset,
+            isPaused: !isTimerRunning);
+      } else {
+        return NarrowLayout(
+            title: widget.title,
+            duration: secondsElapsed,
+            reset: _reset,
+            start: _start,
+            pause: _pause,
+            isPaused: !isTimerRunning);
+      }
+    }));
   }
 }
