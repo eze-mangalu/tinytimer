@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:timer/layouts/narrow.dart';
 import 'package:timer/layouts/wide.dart';
 
@@ -11,19 +12,30 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  static String title = 'Tiny Timer';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Timer',
-      theme: ThemeData(
-        primarySwatch: Colors.yellow,
-        appBarTheme: AppBarTheme.of(context).copyWith(
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            titleTextStyle: Theme.of(context).textTheme.headlineMedium,
-            centerTitle: false),
+      title: title,
+      theme: _buildTheme(),
+      home: MyHomePage(title: title),
+    );
+  }
+
+  ThemeData _buildTheme() {
+    var baseTheme = ThemeData(colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow));
+
+    return baseTheme.copyWith(
+      appBarTheme: baseTheme.appBarTheme.copyWith(
+          elevation: 0,
+          backgroundColor: baseTheme.scaffoldBackgroundColor,
+          // foregroundColor: baseTheme.primaryColor,
+          centerTitle: false),
+      textTheme: GoogleFonts.robotoMonoTextTheme(baseTheme.textTheme).copyWith(
+        displayLarge: GoogleFonts.nunitoSans(textStyle: baseTheme.textTheme.displayLarge),
+          displayMedium: GoogleFonts.nunitoSans(textStyle: baseTheme.textTheme.displayMedium),
       ),
-      home: const MyHomePage(title: 'Tiny Timer'),
     );
   }
 }
