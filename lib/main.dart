@@ -17,18 +17,19 @@ class MyApp extends StatelessWidget {
       title: title,
       theme: _buildTheme(),
       home: HomePage(title: title),
+      debugShowCheckedModeBanner: false,
     );
   }
 
   ThemeData _buildTheme() {
     var baseTheme = ThemeData(
-        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow));
+      colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.yellow),
+    );
 
     return baseTheme.copyWith(
       appBarTheme: baseTheme.appBarTheme.copyWith(
           elevation: 0,
           backgroundColor: baseTheme.scaffoldBackgroundColor,
-          // foregroundColor: baseTheme.primaryColor,
           centerTitle: false),
       textTheme: GoogleFonts.robotoMonoTextTheme(baseTheme.textTheme).copyWith(
         displayLarge:
