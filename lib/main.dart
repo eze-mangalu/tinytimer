@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:timer/screens/home.dart';
+import 'package:timer/screens/list.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +16,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: title,
       theme: _buildTheme(),
-      home: HomePage(title: title),
+      home: ListPage(
+        title: title,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }

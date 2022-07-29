@@ -1,18 +1,25 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import '../widgets/display.dart';
-import '../widgets/nav_bar.dart';
+import 'package:timer/screens/list.dart';
+import 'package:timer/widgets/display.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
+class TimerPage extends StatefulWidget {
+  const TimerPage(
+      {Key? key,
+      required this.title,
+      required this.durations,
+      required this.index})
+      : super(key: key);
   final String title;
+  final List<Duration> durations;
+  final int index;
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<TimerPage> createState() => _TimerPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _TimerPageState extends State<TimerPage> {
   Timer? timer;
   Duration secondsElapsed = const Duration(seconds: 0);
 
@@ -27,7 +34,7 @@ class _HomePageState extends State<HomePage> {
 
   void _pause() {
     setState(() {
-      timer!.cancel();
+      timer?.cancel();
     });
   }
 
@@ -36,6 +43,26 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       secondsElapsed = const Duration(seconds: 0);
     });
+  }
+
+  void _backToList() {
+    _pause();
+    final List<Duration> updatedDurations = widget.durations;
+    updatedDurations[widget.index] = secondsElapsed;
+    Navigator.of(context).pop(MaterialPageRoute(
+        builder: (context) => ListPage(
+              title: 'Enjoying Tiny Timer?',
+              updatedDurations: updatedDurations,
+            )));
+  }
+
+  @override
+  void initState() {
+    setState(() {
+      secondsElapsed = widget.durations[widget.index];
+    });
+    _start();
+    super.initState();
   }
 
   @override
@@ -50,17 +77,19 @@ class _HomePageState extends State<HomePage> {
     final double maxWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      appBar: NavBar(
-        title: widget.title,
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: _backToList,
+        ),
+        title: Text(widget.title),
       ),
       body: maxWidth > 500
           ? Column(
               children: [
                 Expanded(
-                  child: Display(
-                      duration: secondsElapsed,
-                      style: Theme.of(context).textTheme.displayLarge),
-                ),
+                    child: Display(
+                  duration: secondsElapsed,
+                )),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
